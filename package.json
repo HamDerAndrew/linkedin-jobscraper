@@ -1,0 +1,22 @@
+{
+  "name": "linkedin-job-scraper",
+  "version": "1.0.0",
+  "description": "A webscraper that scrapes the jobpostings that are less than or equal to 2 days old",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scraping",
+    "javascript",
+    "webscraping",
+    "nodejs"
+  ],
+  "author": "André Larsen",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "puppeteer": "^5.2.1"
+  }
+}
