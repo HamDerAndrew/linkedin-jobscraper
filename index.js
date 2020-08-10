@@ -30,6 +30,9 @@ require('dotenv').config({path: './config/env.env' });
   // Scroll down to the bottom of the JobPage to load in more jobs
   await autoScroll(page)
 
+  // Grab jobs according to criteria
+  await grabJobs(page);
+
   // await browser.close();
 })();
 
@@ -53,3 +56,24 @@ const autoScroll = async (page) => {
     })
   })
 }
+
+const grabJobs = async (page) => {
+  const jobsUl = await page.$('.card-list, card-list--tile, jobs-jymbii__list');
+  // Remember to remove the first item in the list on the site as it is not a "job post", but some profile premium offer
+  const jobsNode = await jobsUl.$$('.jobs-jymbii__list-item, .jobs-jymbii__list-item--job-card-addon, .card-list__item, .a11y-job-card');
+  const jobList = await Array.from(jobsNode);
+  let count = 0;
+  let earlybirdJobs = [];
+
+  jobList.forEach(async (job, index) => {
+    const jobTitleContainer = await job.$('.job-card-square__title');
+    // page.evaluate gives access to the complete DOM API. Therefore you can use 'innerText'
+    const jobText = await page.evaluate(async (element) => {
+      return element.innerText
+    }, jobTitleContainer)
+    console.log(jobText);
+  })
+
+}
+
+// https://stackoverflow.com/questions/51529332/puppeteer-scroll-down-until-you-cant-anymore
