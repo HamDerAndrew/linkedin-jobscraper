@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer');
 require('dotenv').config({path: './config/env.env' });
 
+
+
 (async () => {
   const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
@@ -67,13 +69,61 @@ const grabJobs = async (page) => {
 
   jobList.forEach(async (job, index) => {
     const jobTitleContainer = await job.$('.job-card-square__title');
+    const jobLinkElement = await job.$('.job-card-square__link');
+    const timeStampElement = await job.$('time');
+
     // page.evaluate gives access to the complete DOM API. Therefore you can use 'innerText'
     const jobText = await page.evaluate(async (element) => {
       return element.innerText
     }, jobTitleContainer)
-    console.log(jobText);
+
+    const jobLink = await page.evaluate(async (element) => {
+      return element.href
+    }, jobLinkElement)
+
+    const timeStamp = await page.evaluate(async (element) => {
+      return element.innerText;
+    }, timeStampElement)
+
+    const splitTimeStamp = timeStamp.split(' ');
+    const amountOfTime = parseInt(splitTimeStamp[0]);
+    const typeOfDate =  splitTimeStamp[1];
+
+    if (amountOfTime < 5 && typeOfDate === "dage") {
+      const jobObj = {
+        name: jobText,
+        link: jobLink,
+        posted: timeStamp
+      }
+      earlybirdJobs.push(jobObj);
+    } else if (amountOfTime === 1 && typeOfDate === "dag") {
+      const jobObj = {
+        name: jobText,
+        link: jobLink,
+        posted: timeStamp
+      }
+      earlybirdJobs.push(jobObj);
+    } else if (amountOfTime < 24 && typeOfDate === "timer") {
+      const jobObj = {
+        name: jobText,
+        link: jobLink,
+        posted: timeStamp
+      }
+      earlybirdJobs.push(jobObj);
+    } else {
+      return
+    }
+
+    // console.log(jobText);
+    // console.log(jobLink);
+    // console.log(amountOfTime + ' ' + typeOfDate)
   })
+
+  console.log(earlybirdJobs)
 
 }
 
 // https://stackoverflow.com/questions/51529332/puppeteer-scroll-down-until-you-cant-anymore
+
+// Grabbing an element and accessing the DOM API:
+// https://github.com/puppeteer/puppeteer/issues/3051 
