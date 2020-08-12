@@ -69,6 +69,8 @@ const grabJobs = async (page) => {
 
   jobList.forEach(async (job, index) => {
     const jobTitleContainer = await job.$('.job-card-square__title');
+    
+    // Everything after this doesn't get pushed
     const jobLinkElement = await job.$('.job-card-square__link');
     const timeStampElement = await job.$('time');
 
@@ -85,34 +87,35 @@ const grabJobs = async (page) => {
       return element.innerText;
     }, timeStampElement)
 
-    const splitTimeStamp = timeStamp.split(' ');
-    const amountOfTime = parseInt(splitTimeStamp[0]);
-    const typeOfDate =  splitTimeStamp[1];
+    const splitTimeStamp = await timeStamp.split(' ');
+    const amountOfTime = await parseInt(splitTimeStamp[0]);
+    const typeOfDate =  await splitTimeStamp[1];
 
-    if (amountOfTime < 5 && typeOfDate === "dage") {
-      const jobObj = {
-        name: jobText,
-        link: jobLink,
-        posted: timeStamp
-      }
-      earlybirdJobs.push(jobObj);
-    } else if (amountOfTime === 1 && typeOfDate === "dag") {
-      const jobObj = {
-        name: jobText,
-        link: jobLink,
-        posted: timeStamp
-      }
-      earlybirdJobs.push(jobObj);
-    } else if (amountOfTime < 24 && typeOfDate === "timer") {
-      const jobObj = {
-        name: jobText,
-        link: jobLink,
-        posted: timeStamp
-      }
-      earlybirdJobs.push(jobObj);
-    } else {
-      return
-    }
+
+    // if (amountOfTime < 5 && typeOfDate === "dage") {
+    //   const jobObj = {
+    //     name: jobText,
+    //     link: jobLink,
+    //     posted: timeStamp
+    //   }
+    //   earlybirdJobs.push(jobObj);
+    // } else if (amountOfTime === 1 && typeOfDate === "dag") {
+    //   const jobObj = {
+    //     name: jobText,
+    //     link: jobLink,
+    //     posted: timeStamp
+    //   }
+    //   earlybirdJobs.push(jobObj);
+    // } else if (amountOfTime < 24 && typeOfDate === "timer") {
+    //   const jobObj = {
+    //     name: jobText,
+    //     link: jobLink,
+    //     posted: timeStamp
+    //   }
+    //   earlybirdJobs.push(jobObj);
+    // } else {
+    //   console.log("None", count++)
+    // }
 
     // console.log(jobText);
     // console.log(jobLink);
@@ -122,6 +125,7 @@ const grabJobs = async (page) => {
   console.log(earlybirdJobs)
 
 }
+
 
 // https://stackoverflow.com/questions/51529332/puppeteer-scroll-down-until-you-cant-anymore
 
