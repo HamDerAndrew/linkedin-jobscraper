@@ -67,7 +67,7 @@ const grabJobs = async (page) => {
   let count = 0;
   let earlybirdJobs = [];
 
-  jobList.forEach(async (job, index) => {
+  jobList.map(async (job, index) => {
     const jobTitleContainer = await job.$('.job-card-square__title');
     
     // Everything after this doesn't get pushed
@@ -86,6 +86,10 @@ const grabJobs = async (page) => {
     const timeStamp = await page.evaluate(async (element) => {
       return element.innerText;
     }, timeStampElement)
+    earlybirdJobs.push(jobText)
+    console.log(jobText);
+    console.log(jobLink);
+    console.log(timeStamp)
 
     const splitTimeStamp = await timeStamp.split(' ');
     const amountOfTime = await parseInt(splitTimeStamp[0]);
