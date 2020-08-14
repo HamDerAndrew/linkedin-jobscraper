@@ -67,7 +67,8 @@ const grabJobs = async (page) => {
   let count = 0;
   let earlybirdJobs = [];
 
-  jobList.map(async (job, index) => {
+  // Using map instead of forEach as forEach does not wait for promises
+  const getJobs = jobList.map(async (job, index) => {
     const jobTitleContainer = await job.$('.job-card-square__title');
     
     // Everything after this doesn't get pushed
@@ -87,44 +88,44 @@ const grabJobs = async (page) => {
       return element.innerText;
     }, timeStampElement)
     earlybirdJobs.push(jobText)
-    console.log(jobText);
-    console.log(jobLink);
-    console.log(timeStamp)
 
     const splitTimeStamp = await timeStamp.split(' ');
     const amountOfTime = await parseInt(splitTimeStamp[0]);
     const typeOfDate =  await splitTimeStamp[1];
 
 
-    // if (amountOfTime < 5 && typeOfDate === "dage") {
-    //   const jobObj = {
-    //     name: jobText,
-    //     link: jobLink,
-    //     posted: timeStamp
-    //   }
-    //   earlybirdJobs.push(jobObj);
-    // } else if (amountOfTime === 1 && typeOfDate === "dag") {
-    //   const jobObj = {
-    //     name: jobText,
-    //     link: jobLink,
-    //     posted: timeStamp
-    //   }
-    //   earlybirdJobs.push(jobObj);
-    // } else if (amountOfTime < 24 && typeOfDate === "timer") {
-    //   const jobObj = {
-    //     name: jobText,
-    //     link: jobLink,
-    //     posted: timeStamp
-    //   }
-    //   earlybirdJobs.push(jobObj);
-    // } else {
-    //   console.log("None", count++)
-    // }
+    if (amountOfTime < 5 && typeOfDate === "dage") {
+      const jobObj = {
+        name: jobText,
+        link: jobLink,
+        posted: timeStamp
+      }
+      earlybirdJobs.push(jobObj);
+    } else if (amountOfTime === 1 && typeOfDate === "dag") {
+      const jobObj = {
+        name: jobText,
+        link: jobLink,
+        posted: timeStamp
+      }
+      earlybirdJobs.push(jobObj);
+    } else if (amountOfTime < 24 && typeOfDate === "timer") {
+      const jobObj = {
+        name: jobText,
+        link: jobLink,
+        posted: timeStamp
+      }
+      earlybirdJobs.push(jobObj);
+    } else {
+      console.log("None", count++)
+    }
 
     // console.log(jobText);
     // console.log(jobLink);
     // console.log(amountOfTime + ' ' + typeOfDate)
+    return earlybirdJobs;
   })
+
+  await Promise.all(getJobs)
 
   console.log(earlybirdJobs)
 
