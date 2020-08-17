@@ -70,8 +70,6 @@ const grabJobs = async (page) => {
   // Using map instead of forEach as forEach does not wait for promises
   const getJobs = jobList.map(async (job, index) => {
     const jobTitleContainer = await job.$('.job-card-square__title');
-    
-    // Everything after this doesn't get pushed
     const jobLinkElement = await job.$('.job-card-square__link');
     const timeStampElement = await job.$('time');
 
@@ -87,14 +85,14 @@ const grabJobs = async (page) => {
     const timeStamp = await page.evaluate(async (element) => {
       return element.innerText;
     }, timeStampElement)
-    earlybirdJobs.push(jobText)
+    
 
     const splitTimeStamp = await timeStamp.split(' ');
     const amountOfTime = await parseInt(splitTimeStamp[0]);
     const typeOfDate =  await splitTimeStamp[1];
 
 
-    if (amountOfTime < 5 && typeOfDate === "dage") {
+    if (amountOfTime < 4 && typeOfDate === "dage") {
       const jobObj = {
         name: jobText,
         link: jobLink,
@@ -119,16 +117,12 @@ const grabJobs = async (page) => {
       console.log("None", count++)
     }
 
-    // console.log(jobText);
-    // console.log(jobLink);
-    // console.log(amountOfTime + ' ' + typeOfDate)
     return earlybirdJobs;
   })
 
   await Promise.all(getJobs)
 
   console.log(earlybirdJobs)
-
 }
 
 
